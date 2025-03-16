@@ -211,4 +211,92 @@ class PrincipalController extends Controller
             return back()->with('correoMessage', 'Ocurrio un error al tratar de enviar el correo');
         }
     }
+
+    public function carritoShow(){
+        $data = [
+            "productos" => DB::table('ventas_productos')
+                ->where('ID_Cliente', Auth::user()->id)
+                ->where('Pagado', 0)
+                ->select('ID_Producto', DB::raw('SUM(Cantidad) as total_cantidad'), DB::raw('SUM(Subtotal) as total_precio'))
+                ->groupBy('ID_Producto')
+                ->get(),
+            "membresias" => DB::table('ventas')
+                ->where('ID_Cliente', Auth::user()->id)
+                ->where('Pagado', 0)
+                ->get()
+        ];
+
+        return view('carrito.carrito', $data);
+    }
+
+    public function productosCarrito(Request $request) {
+        try {
+            $productos = DB::table('ventas_productos')
+                ->where('ID_Cliente', Auth::user()->id)
+                ->update([
+                    'Pagado' => 1,
+                    'Comprobante' => $request->file('file')->store('public/ventas_productos')
+                ]);
+
+            if($productos)
+                return back()->with('carritoMessage', 'Se genero el pago exitosamente');
+            else
+                return back()->with('carritoMessage', 'Ocurrio un error al generar el pago');
+
+        } catch (\Exception $e) {
+            logs('Ocurrio un error productosCarrito:' . $e->getMessage());
+            return back()->with('carritoMessage', 'Ocurrio un error');
+        }
+    }
+
+    public function productosMembresia(Request $request) {
+        try {
+            $productos = DB::table('ventas')
+                ->where('ID_Cliente', Auth::user()->id)
+                ->update([
+                    'Pagado' => 1,
+                    'Comprobante' => $request->file('file')->store('public/ventas_membresia')
+                ]);
+
+            if($productos)
+                return back()->with('carritoMessage', 'Se genero el pago de la membresia exitosamente');
+            else
+                return back()->with('carritoMessage', 'Ocurrio un error al generar el pago');
+
+        } catch (\Exception $e) {
+            logs('Ocurrio un error productosCarrito:' . $e->getMessage());
+            return back()->with('carritoMessage', 'Ocurrio un error');
+        }
+    }
+
+    public function productosCarritoEliminar($usuario) {
+        try {
+            $productos = DB::table('ventas_productos')
+                ->where('Pagado', 0)
+                ->where('ID_Cliente', $usuario)
+                ->get();
+
+            foreach($productos as $producto){
+                $idProducto = $producto->ID_Producto;
+                $prod = DB::table('productos')
+                    ->where('ID_Producto', $idProducto)
+                    ->value('Cantidad_disponible');
+
+                DB::table('productos')
+                    ->where('ID_Producto', $idProducto)
+                    ->update([
+                        'Cantidad_disponible' => $prod + 1
+                    ]);
+            }
+
+            DB::table('ventas_productos')
+                ->where('ID_Cliente', $usuario)
+                ->delete();
+
+                return back()->with('carritoMessage', 'Se elimino la compra');
+        } catch (\Exception $e) {
+            logs('Ocurrio un error al eliminar los productos: ' . $e->getMessage());
+            return back()->with('carritoMessage', 'Ocurrio un error al eliminar los productos del carrito');
+        }
+    }
 }

@@ -11,7 +11,7 @@
     <section class="home">
         <div class="max-width">
             <div class="home-content">
-                <h3>El exceso de entreno es bueno pa' la salud</h3>
+                <h3>Cada paso te llevará donde quieres estar.</h3>
                 <p>
                     ¡En el entreno no hay limites!. Es momento de darla toda
                     y sacar lo mejor de nosotros.Juntos!, vamos a romperla y

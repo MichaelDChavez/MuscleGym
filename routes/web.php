@@ -118,6 +118,10 @@ Route::middleware(['auth'])->group(function() {
     Route::post('agregar/plan', [PrincipalController::class, 'agregarPlanUsuario'])->name('agregarPlanUsuario');
     Route::delete("eliminar/plan/{usuario}/{plan}", [PrincipalController::class, 'eliminarPlanUsuario'])->name('eliminarPlanUsuario');
     Route::post('agregar/plan/nutricional', [PrincipalController::class, 'agregarPlanNutricional'])->name('agregar.plan');
+    Route::get('/carrito', [PrincipalController::class, 'carritoShow'])->name('carrito.show');
+    Route::post('/carrito/pago/productos', [PrincipalController::class, 'productosCarrito'])->name('pago.productos');
+    Route::post('/carrito/pago/membresia', [PrincipalController::class, 'productosMembresia'])->name('pago.membresia');
+    Route::delete('/carrito/eliminar/productos/{usuario}', [PrincipalController::class, 'productosCarritoEliminar'])->name('eliminar.productos.compra');
 });
 
 

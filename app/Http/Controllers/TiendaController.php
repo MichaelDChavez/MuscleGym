@@ -325,8 +325,9 @@ class TiendaController extends Controller
 
                 $productoValor = DB::table('productos')->where('ID_Producto', $id)->value('Precio');
                 DB::table('ventas_productos')->insert([
-                    'ID_Venta_producto' => $existsId ? intval($idVenta->ID_Venta_producto) + 1 : $idVenta,
-                    'ID_Venta' => 102,
+                    // 'ID_Venta_producto' => $existsId ? intval($idVenta->ID_Venta_producto) + 1 : $idVenta,
+                    'ID_Venta_producto' => uniqid(),
+                    'ID_Cliente' => Auth::user()->id,
                     'ID_Producto' => $id,
                     'Cantidad' => 1,
                     'Subtotal' => $productoValor,
