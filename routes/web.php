@@ -40,6 +40,7 @@ Route::middleware('auth')->group(function () {
 
         $membresia = "";
         $historialMedico = [];
+        $usuarios = [];
 
         if(Auth::user()->rol == 2) {
             $membresia = DB::table('membresia as m')
@@ -53,15 +54,14 @@ Route::middleware('auth')->group(function () {
 
             if(empty($membresia)) $membresia = "No Cuenta con Membresia";
 
-            if(empty($historialMedico))
-                $historialMedico = [];
+            if(empty($historialMedico)) $historialMedico = [];
         }
 
         return view('perfil.perfil', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
             'membresia' => $membresia,
-            'historialMedico' => $historialMedico
+            'historialMedico' => $historialMedico,
         ]);
     })->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -101,6 +101,10 @@ Route::middleware(['auth', 'administrador'])->group(function(){
     Route::get('/reportes/descargar/usuarios/membresia', [TiendaController::class, 'reporteSinMembresia'])->name('descargar.repoorte.sinmembresia');
     Route::get('/dietas/lista', [PrincipalController::class, 'verDietas'])->name('ver.dietas');
     Route::put('/editar/dieta/{id}', [PrincipalController::class, 'editarDieta'])->name('editar.dieta');
+    Route::delete('/eliminar/dieta/{id}', [PrincipalController::class, 'deleteDieta'])->name('borrar.membresia');
+
+    Route::get('/envio/encuesta', [PrincipalController::class, 'encuestaView'])->name('encuesta.view');
+    Route::get('/correo/satisfaccion/{id}', [PrincipalController::class, 'correoSatisfaccion'])->name('correo.satisfaccion');
 });
 
 Route::middleware(['auth'])->group(function(){

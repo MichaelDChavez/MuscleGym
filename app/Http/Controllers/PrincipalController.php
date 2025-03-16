@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\ContactoMail;
+use App\Mail\SatisfaccionMail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -152,17 +153,62 @@ class PrincipalController extends Controller
             $dieta = DB::table('planes_nutricionales')
                 ->where('Id_plan_nutricional', $id)
                 ->update([
-                    "Calorias_Diarias" => $request->Diarias,
-                    "Proteinas" => $request->Proteinas,
-                    "Carbohidtaros" => $request->Carbohidtaros,
-                    "Grasas" => $request->Grasas,
-                    "Ejemplo" => $request->Ejemplo,
+                    "Calorias_Diarias" => $request->Diarias_hidden,
+                    "Proteinas" => $request->Proteinas_hidden,
+                    "Carbohidtaros" => $request->Carbohidtaros_hidden,
+                    "Grasas" => $request->Grasas_hidden,
+                    "Ejemplo" => $request->Ejemplo_hidden,
                 ]);
 
-            return back();
+            return back()->with('dietaMessage', 'Se actualizo la dieta correctamente');
         } catch (\Exception $e) {
             logs("Ocurrio un error en editar Dieta: ". $e->getMessage());
-            return back();
+            return back()->with('dietaMessage', 'Ocurrio un erro al tratar de actualizar');
+        }
+    }
+
+    public function deleteDieta($id){
+        try {
+            DB::table('planes_nutricionales')
+                ->where('Id_plan_nutricional', $id)
+                ->delete();
+
+                return back()->with('dietaMessage', 'Se elimino la dieta correctamente');
+        } catch (\Exception $e) {
+            logs('Ocurrio un error en eliminar Dieta: '. $e->getMessage());
+            return back()->with('dietaMessage', 'Ocurrio un error al tratar de eliminar la dieta');
+        }
+    }
+
+    public function encuestaView(){
+        $data = [
+            "usuarios" => DB::table('users as u')
+                ->leftJoin('ventas as v', 'v.ID_Cliente', '=', 'u.id')
+                // ->join('seguimiento as se', 'se.ID_Cliente', '=', 'u.id')
+                ->where('u.rol', '=', '2')
+                ->where('v.pagado', '=', 1)
+                ->whereNotNull('v.ID_Cliente')
+                ->orderBy('created_at', 'desc')
+                ->get()
+            ];
+        return view('encuestas/satisfaccion', $data);
+    }
+
+    public function correoSatisfaccion($id){
+        try {
+            $correo = DB::table('users')
+                ->where('id', $id)
+                ->value('email');
+
+            $data = [
+                "id" => $id
+            ];
+
+            Mail::to($correo)->send(new SatisfaccionMail($data));
+            return back()->with('correoMessage', 'Se envio el correo exitosamente');
+        } catch (\Exception $e) {
+            logs('Ocurrio un error al enviar el correo de satisfaccion: ' . $e->getMessage());
+            return back()->with('correoMessage', 'Ocurrio un error al tratar de enviar el correo');
         }
     }
 }

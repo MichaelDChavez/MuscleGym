@@ -85,7 +85,7 @@
                     <table>
                         <tr>
                             <th>Nombre</th>
-                            <th>Dieta</th>
+                            <th>Rutina</th>
                         </tr>
                         @foreach ($usuarios as $usuario)
                             @php
