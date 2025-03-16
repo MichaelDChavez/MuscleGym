@@ -58,6 +58,19 @@
     </a>
 </center>
 @endif
+@if (Auth::user()->rol === 2)
+    @if ($membresiaUsuario)
+        <center>
+            <form method="POST" action="{{ route('eliminar.membresia', Auth::user()->id) }}">
+                @method("DELETE")
+                @csrf
+                <button type="submit" class="btn_" style="background-color: red">
+                    Eliminar Membresia
+                </button>
+            </form>
+        </center>
+    @endif
+@endif
 @if (Auth::user()->rol === 1)
     <div style="background-color:  rgba(224, 119, 27, 0.418); padding: 20px; margin:50px">
         <table>
@@ -112,7 +125,7 @@
     </div>
 @else
 
-    <div style="margin-inline: 200px; gap: 20px; display: grid; grid-template-columns: auto auto auto;">
+    <div style="margin-inline: 200px; gap: 20px; display: grid; grid-template-columns: auto auto auto; margin-top: 20px;">
         @foreach ($membresias as $membresia)
             <form method="POST" action="{{route('membresias.store', $membresia->ID_Membresia)}}" style="background-color:  rgba(224, 119, 27, 0.418); padding: 20px; border-radius: 10px">
                 @csrf

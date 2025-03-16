@@ -8,6 +8,7 @@ use App\Http\Controllers\TiendaController;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -36,9 +37,31 @@ Route::get('/servicios', [PrincipalController::class, 'servicios'])->name('servi
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', function(Request $request){
+
+        $membresia = "";
+        $historialMedico = [];
+
+        if(Auth::user()->rol == 2) {
+            $membresia = DB::table('membresia as m')
+                ->join('ventas as v', 'v.ID_Membresia', '=', 'm.ID_Membresia')
+                ->where('v.ID_Cliente', '=', Auth::user()->id)
+                ->value('Tipo_Membresia');
+
+            $historialMedico = DB::table('servicio_salud')
+                ->where('ID_Cliente', Auth::user()->id)
+                ->first();
+
+            if(empty($membresia)) $membresia = "No Cuenta con Membresia";
+
+            if(empty($historialMedico))
+                $historialMedico = [];
+        }
+
         return view('perfil.perfil', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
+            'membresia' => $membresia,
+            'historialMedico' => $historialMedico
         ]);
     })->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -65,7 +88,7 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/tienda/membresias/{id}', [TiendaController::class, 'guardarMembresia'])->name('membresias.store');
     Route::put('/tienda/membresias/{id}', [TiendaController::class, 'actualizarFechaVenta'])->name('actualizar.fecha.venta');
     Route::delete('/tienda/membresias/{id}', [TiendaController::class, 'eliminarVenta'])->name('eliminar.venta');
-
+    Route::delete('/tienda/usuario/membresia/{id}', [TiendaController::class, 'eliminarMembresiaUsuario'])->name('eliminar.membresia');
 });
 
 Route::middleware(['auth', 'administrador'])->group(function(){
@@ -75,6 +98,9 @@ Route::middleware(['auth', 'administrador'])->group(function(){
     Route::get('/reportes', [TiendaController::class, 'reportesView'])->name('reportes.view');
     Route::get('/reportes/descargar', [TiendaController::class, 'reporteDescarga'])->name('descargar.repoorte');
     Route::get('/reportes/descargar/productos', [TiendaController::class, 'reporteDescargaProductos'])->name('descargar.repoorte.productos');
+    Route::get('/reportes/descargar/usuarios/membresia', [TiendaController::class, 'reporteSinMembresia'])->name('descargar.repoorte.sinmembresia');
+    Route::get('/dietas/lista', [PrincipalController::class, 'verDietas'])->name('ver.dietas');
+    Route::put('/editar/dieta/{id}', [PrincipalController::class, 'editarDieta'])->name('editar.dieta');
 });
 
 Route::middleware(['auth'])->group(function(){
@@ -82,6 +108,12 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/horarios', [HorariosController::class,'horariosStore'])->name('horarios.create');
     Route::post("/horarios/cliente", [HorariosController::class, 'horarioClienteCreate'])->name("horario.cliente.create");
     Route::delete("/horario/cliente/{id}", [HorariosController::class,"eliminarHorarioCliente"])->name("eliminar.horario.cliente");
+});
+
+Route::middleware(['auth'])->group(function() {
+    Route::post('agregar/plan', [PrincipalController::class, 'agregarPlanUsuario'])->name('agregarPlanUsuario');
+    Route::delete("eliminar/plan/{usuario}/{plan}", [PrincipalController::class, 'eliminarPlanUsuario'])->name('eliminarPlanUsuario');
+    Route::post('agregar/plan/nutricional', [PrincipalController::class, 'agregarPlanNutricional'])->name('agregar.plan');
 });
 
 

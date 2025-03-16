@@ -39,15 +39,6 @@
                 <br>
                 <x-input-error :messages="$errors->get('medioContacto')" class="mt-2" />
                 <br>
-
-                {{-- <input type="number" minlength="10" maxlength="10" placeholder="Télefono o Celular" name="telefono" required>
-                <br>
-                <x-input-error :messages="$errors->get('telefono')" class="mt-2" />
-                <br>
-                <input type="text" placeholder="Direccion" name="direccion" required>
-                <br>
-                <x-input-error :messages="$errors->get('direccion')" class="mt-2" />
-                <br> --}}
                 <button type="submit" class="btn">Contactanos</button>
             </div>
         </form>

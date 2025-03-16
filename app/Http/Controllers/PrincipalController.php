@@ -56,6 +56,15 @@ class PrincipalController extends Controller
                 "Estado" => 1,
             ]);
 
+            if(!empty($request->servicio_salud)){
+                DB::table('servicio_salud')->insert([
+                    "ID_Servicio_Salud" => uniqid(),
+                    "ID_Cliente" => Auth::user()->id,
+                    "Historial_Medico" => $request->servicio_salud,
+                    "Foto" => $request->file('file')->store('public/historico')
+                ]);
+            }
+
             if($cliente){
                 User::where('id', Auth::user()->id)
                     ->update(['primer_ingreso' => 1]);
@@ -68,6 +77,92 @@ class PrincipalController extends Controller
         }
     }
     public function servicios(){
-        return view('principal/servicios');
+        $data = [
+            "usuarios" => DB::table('users as u')
+                ->where('rol', 2)
+                // ->join('planes_nutricionales as pn', 'u.id', '=', 'pn.Id_Cliente')
+                ->get(),
+            "planes" => DB::table('planes_nutricionales')
+                ->get(),
+        ];
+
+        if(Auth::user()->rol == 2) {
+            $data["membresia"] = DB::table("ventas")
+                ->where("ID_Cliente", Auth::user()->id)
+                ->first();
+        }
+
+        return view('principal/servicios', $data);
+    }
+
+    public function agregarPlanUsuario(Request $request) {
+        try {
+
+            DB::table('planes_usuario')->insert([
+                "ID_Cliente" => Auth::user()->id,
+                "ID_Plan" => $request->idPlan
+            ]);
+
+            return back()->with('planUsuario', 'Se agrego el plan de alimentación');
+        } catch (\Exception $e) {
+            Log::error("Ocurrio un error agregarPlanUsuario: " . $e->getMessage());
+            return back()->with('planUsuario', 'Ocurrio un error');
+        }
+    }
+
+    public function eliminarPlanUsuario($usuario, $plan) {
+        try {
+            DB::table('planes_usuario')->where([
+                "ID_Cliente" => $usuario,
+                "ID_Plan" => $plan
+            ])->delete();
+
+            return back()->with('planUsuario', 'Se eliminó el plan de alimentación');
+        } catch (\Exception $e) {
+            Log::error('Ocurrio un error al eliminar el plan: ' . $e->getMessage());
+            return back()->with('planUsuario', 'Ocurrio un error');
+        }
+    }
+
+    public function agregarPlanNutricional(Request $request) {
+        try {
+            $data = $request->except('_token');
+            $data['Id_plan_nutricional'] = uniqid();
+            $data['Estado'] = 1;
+
+            DB::table('planes_nutricionales')->insert($data);
+
+            return back()->with('planUsuario', 'Se agrego el plan de alimentación');
+        } catch (\Exception $e) {
+            Log::error('Ocurrio un error al agregar plan nutricional: ' . $e->getMessage());
+            return back()->with('planUsuario', 'Ocurrio un error');
+        }
+    }
+
+    public function verDietas(){
+        $data = [
+            "dietas" => DB::table('planes_nutricionales')
+                ->get(),
+        ];
+        return view('principal.dietas',$data);
+    }
+
+    public function editarDieta($id, Request $request){
+        try {
+            $dieta = DB::table('planes_nutricionales')
+                ->where('Id_plan_nutricional', $id)
+                ->update([
+                    "Calorias_Diarias" => $request->Diarias,
+                    "Proteinas" => $request->Proteinas,
+                    "Carbohidtaros" => $request->Carbohidtaros,
+                    "Grasas" => $request->Grasas,
+                    "Ejemplo" => $request->Ejemplo,
+                ]);
+
+            return back();
+        } catch (\Exception $e) {
+            logs("Ocurrio un error en editar Dieta: ". $e->getMessage());
+            return back();
+        }
     }
 }

@@ -10,8 +10,7 @@
     @endif
 
     <div class="modal-content">
-        <span class="close">&times;</span>
-        <form method="POST" action="{{ route("primerIngreso") }}">
+        <form method="POST" action="{{ route("primerIngreso") }}" enctype="multipart/form-data" >
             <h2 style="color: white">Formulario Inicial</h2><br>
             @csrf
             <div class="input-box">
@@ -37,11 +36,21 @@
                 <br>
                 <x-input-error :messages="$errors->get('direccion')" class="mt-2" />
                 <br>
+                <span style="color: white">¿Cuenta con alguna restriccion médica?</span><br>
+                <div class="display: flex;">
+                    <span style="margin-left: 20px; color: white; width: 30px; display: flex;">
+                        <input type="radio" onclick="document.getElementById('servicio_salud').disabled = false; document.getElementById('fileSalud').style.display = 'block'" name="validate" id="si" value="si"> Sí
+                    </span>
+                    <span style="margin-left: 20px; color: white; width: 38px; display: flex;">
+                        <input type="radio" onclick="document.getElementById('servicio_salud').disabled = true; document.getElementById('servicio_salud').value = ''; document.getElementById('fileSalud').style.display = 'none'" name="validate" id="no" value="no"> No
+                    </span><br>
+                </div>
+                <textarea id="servicio_salud" disabled name="servicio_salud" placeholder="Especifique que restricciones" style="resize: vertical; height: 100px"></textarea> <br><br>
+                <input id="fileSalud" type="file" name="file" style="display: none">
                 <button type="submit" class="btn">Terminar</button>
             </div>
         </form>
     </div>
-
 </div>
 
 
@@ -62,7 +71,7 @@
 
     .modal-content {
         background-color: #000;
-        margin: 8% auto;
+        margin: auto;
         padding: 20px;
         border: 1px solid #888;
         width: 50%;

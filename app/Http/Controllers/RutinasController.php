@@ -15,6 +15,7 @@ class RutinasController extends Controller
                 ->join('membresia as m', 'v.ID_Membresia', '=', 'm.ID_Membresia')
                 ->value('m.Tipo_Membresia'),
             'rutinasUsuario' => DB::table('rutinas')->where('ID_Cliente', Auth::user()->id)->get(),
+            'usuarios' => DB::table('users')->where('rol', 2)->get(),
             'rutinasAdministrador' => DB::table('rutinas')->orderBy('ID_Cliente', 'asc')->get()
         ];
 

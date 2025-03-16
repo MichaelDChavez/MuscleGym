@@ -10,12 +10,10 @@
         <a href="{{route('principal')}}">Inicio</a>
         <!--Home-->
         @auth
-            @if(Auth::user()->rol == 2)
-                <a href="{{route('servicios.view')}}">Servicios</a>
-            @endif
+            <a href="{{route('servicios.view')}}">Planes Alimenticios</a>
         @endauth
         @guest
-            <a href="{{route('servicios.view')}}">Servicios</a>
+            <a href="{{route('servicios.view')}}">Planes Alimenticios</a>
         @endguest
         <!--services-->
         @guest
@@ -26,11 +24,6 @@
                 <a href="{{ route('reportes.view') }}">Reportes</a>
             @endif
         @endauth
-        <!--contact-->
-        @guest
-            <a href="error500.html">Nosotros</a>
-        @endguest
-
         @auth
             <a href="{{ route('tienda.show') }}">Tienda</a>
         @endauth

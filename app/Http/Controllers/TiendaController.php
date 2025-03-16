@@ -31,6 +31,13 @@ class TiendaController extends Controller
                 ->select('ventas.ID_Cliente', 'ventas.ID_Venta', 'ventas.Monto_o_Cantidad', 'users.name', 'ventas.ID_Membresia', 'ventas.Fecha', 'membresia.Tipo_Membresia')
                 ->get()
         ];
+
+        if(Auth::user()->rol == 2){
+            $datos['membresiaUsuario'] = DB::table('ventas')
+                ->where('ID_Cliente', Auth::user()->id)
+                ->first();
+        }
+
         return view('tienda/membresias', $datos);
     }
 
@@ -222,10 +229,32 @@ class TiendaController extends Controller
         try {
             $inicio = $request->fechaInicio;
             $fin = $request->fechaFin;
-            $ventas = DB::table('ventas')->whereDate('Fecha', '>=', $inicio)->whereDate('Fecha', '<=', $fin)->get();
+            $ventas = DB::table('ventas as v')
+                ->join('users as u', 'u.id', '=', 'v.ID_Cliente')
+                ->whereDate('Fecha', '>=', $inicio)->whereDate('Fecha', '<=', $fin)
+                ->get();
+
+            $data = ['ventas' => $ventas];
 
             $pdf = Pdf::loadView('reportes.reporteGenerado', compact('ventas'));
             return $pdf->download('reporteVentas.pdf');
+        } catch (\Exception $e) {
+            logs($e->getMessage());
+            return back()->with('mensajeReporte', 'Ocurrio un error');
+        }
+    }
+
+    public function reporteSinMembresia() {
+        try {
+            $usuarios = DB::table('users as u')
+            ->leftJoin('ventas as v', 'v.ID_Cliente', '=', 'u.id')
+            ->where('u.rol', '=', '2')
+            ->whereNull('v.ID_Cliente')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+            $pdf = Pdf::loadView('reportes.reporteSinMembresia', compact('usuarios'));
+            return $pdf->download('reporteUsuariosSinMembresia.pdf');
         } catch (\Exception $e) {
             logs($e->getMessage());
             return back()->with('mensajeReporte', 'Ocurrio un error');
@@ -358,6 +387,16 @@ class TiendaController extends Controller
         } catch (\Exception $e) {
             logs('Ocurrio un error: '. $e->getMessage());
             return back()->with('mensajeMembresia','Ocurrio un error');
+        }
+    }
+
+    public function eliminarMembresiaUsuario($idUsuario) {
+        try {
+            DB::table('ventas')->where('ID_Cliente', $idUsuario)->delete();
+            return back()->with('membresiaMensaje','Se elimino correctamente');
+        } catch (\Exception $e) {
+            logs('Ocurrio un error: ' . $e->getMessage());
+            return back()->with('membresiaMensaje', 'Ocurrio un error');
         }
     }
 }
