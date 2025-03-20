@@ -33,7 +33,7 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/servicios', [PrincipalController::class, 'servicios'])->name('servicios.view');
+Route::get('/servicios', [PrincipalController::class, 'servicios'])->middleware(['auth'])->name('servicios.view');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', function(Request $request){
@@ -123,6 +123,8 @@ Route::middleware(['auth'])->group(function() {
     Route::post('/carrito/pago/membresia', [PrincipalController::class, 'productosMembresia'])->name('pago.membresia');
     Route::delete('/carrito/eliminar/productos/{usuario}', [PrincipalController::class, 'productosCarritoEliminar'])->name('eliminar.productos.compra');
 });
+
+Route::get('/quienes/somos', [PrincipalController::class, 'quienesSomosView'])->name('quienessomos.view');
 
 
 require __DIR__.'/auth.php';

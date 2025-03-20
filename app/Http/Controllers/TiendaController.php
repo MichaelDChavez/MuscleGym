@@ -296,7 +296,12 @@ class TiendaController extends Controller
         try {
             $validacion = DB::table('productos')->where('ID_Producto', $request->radioId)->exists();
             if($validacion){
-                DB::table('productos')->where('ID_Producto', $request->radioId)->delete();
+                DB::table('productos')
+                    ->where('ID_Producto', $request->radioId)
+                    ->update([
+                        'Estado' => 0
+                    ]);
+                    // ->delete();
                 return back()->with('productosMensaje', 'Se elimino el producto');
             }
             else{

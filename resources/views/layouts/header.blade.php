@@ -13,7 +13,7 @@
             <a href="{{route('servicios.view')}}">Planes Alimenticios</a>
         @endauth
         @guest
-            <a href="{{route('servicios.view')}}">Planes Alimenticios</a>
+            <a href="{{route('quienessomos.view')}}">Quienes Somos</a>
         @endguest
         <!--services-->
         @guest

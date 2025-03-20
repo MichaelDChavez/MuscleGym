@@ -17,7 +17,7 @@
                 @csrf
                 <h1>Registrate</h1>
                 <div class="input-box">
-                    <input type="text" placeholder="Nombre" name="name" required>
+                    <input type="text" pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" placeholder="Nombre" name="name" required>
                     <br>
                     <x-input-error :messages="$errors->get('name')" class="mt-2" />
                     <br>

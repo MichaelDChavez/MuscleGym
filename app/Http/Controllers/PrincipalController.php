@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\ContactoMail;
 use App\Mail\SatisfaccionMail;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -45,6 +46,16 @@ class PrincipalController extends Controller
 
     public function primerIngreso(Request $request){
         try {
+            $request->validate([
+                "fechaNacimiento" => [
+                    'date',
+                    'required',
+                    'before_or_equal:' . Carbon::now()
+                        ->subYears(14)
+                        ->format('Y-m-d')
+                ]
+            ]);
+
             $cliente = DB::table("cliente")->insert([
                 "ID_Cliente" => Auth::user()->id,
                 "p_Nombre" => Auth::user()->name,
@@ -217,6 +228,7 @@ class PrincipalController extends Controller
             "productos" => DB::table('ventas_productos')
                 ->where('ID_Cliente', Auth::user()->id)
                 ->where('Pagado', 0)
+                ->where('Estado', 1)
                 ->select('ID_Producto', DB::raw('SUM(Cantidad) as total_cantidad'), DB::raw('SUM(Subtotal) as total_precio'))
                 ->groupBy('ID_Producto')
                 ->get(),
@@ -291,12 +303,19 @@ class PrincipalController extends Controller
 
             DB::table('ventas_productos')
                 ->where('ID_Cliente', $usuario)
-                ->delete();
+                ->update([
+                    "Estado" => 0
+                ]);
+                //->delete();
 
-                return back()->with('carritoMessage', 'Se elimino la compra');
+            return back()->with('carritoMessage', 'Se elimino la compra');
         } catch (\Exception $e) {
             logs('Ocurrio un error al eliminar los productos: ' . $e->getMessage());
             return back()->with('carritoMessage', 'Ocurrio un error al eliminar los productos del carrito');
         }
+    }
+
+    public function quienesSomosView(){
+        return view('quienessomos');
     }
 }

@@ -15,7 +15,7 @@
             @csrf
             <div class="input-box">
                 <span style="color: white; margin-left: 20px;">Fecha de Nacimiento</span>
-                <input type="date" title="Fecha de Nacimiento" placeholder="Fecha de Nacimiento" name="fechaNacimiento" required>
+                <input id="fechaNacimiento" type="date" title="Fecha de Nacimiento" placeholder="Fecha de Nacimiento" name="fechaNacimiento" required>
                 <br>
                 <x-input-error :messages="$errors->get('fechaNacimiento')" class="mt-2" />
                 <br>
@@ -53,6 +53,12 @@
     </div>
 </div>
 
+<script>
+    const hoy = new Date();
+    hoy.setFullYear(hoy.getFullYear() - 14);
+
+    document.getElementById('fechaNacimiento').max = hoy.toISOString().split('T')[0];
+</script>
 
 <style>
     .modal {

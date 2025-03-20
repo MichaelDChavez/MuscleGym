@@ -26,7 +26,7 @@
                     <input style="padding: 5px; border-radius: 10px; margin-inline: 10px; margin-block: 5px" type="number" placeholder="Cantidad disponible" name="cantidad_disponible"  />
                     <input style="padding: 5px; border-radius: 10px; margin-inline: 10px; margin-block: 5px" type="text" placeholder="Proveedor" name="proveedor" required />
                     <input style="padding: 5px; border-radius: 10px; margin-inline: 10px; margin-block: 5px" type="file" name="file" required />
-        
+
                     <button class="btn" type="submit">Enviar</button>
                 </form>
             </div>
@@ -37,9 +37,11 @@
                     @method('delete')
                     <div style="height: 200px; overflow: auto;">
                         @foreach ($productos as $producto)
-                        <label>
-                            <input type="radio" name="radioId" value="{{ $producto->ID_Producto }}" /> <b>{{ $producto->Nombre }}</b><br>
-                        </label>
+                            @if ($producto->Estado != 0)
+                                <label>
+                                    <input type="radio" name="radioId" value="{{ $producto->ID_Producto }}" /> <b>{{ $producto->Nombre }}</b><br>
+                                </label>
+                            @endif
                         @endforeach
                     </div>
                     <button class="btn" type="submit">Eliminar</button>
