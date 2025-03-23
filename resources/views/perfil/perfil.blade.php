@@ -8,7 +8,7 @@
                 <div >
                     <div>
                         <div class="max-w-xl">
-                            <div style="margin-top: 20px; border-radius: 20px; background-color:  rgba(224, 119, 27, 0.418); padding: 20px; border: 2px solid black">
+                            <div style="margin-top: 20px; border-radius: 20px; background-color:  rgba(241, 101, 46, 0.692); padding: 20px; border: 2px solid black">
                                 <h2>Datos del Usuario</h2>
                                 <b>Nombre:</b> {{Auth::user()->name}} <br>
                                 <b>Correo:</b> {{Auth::user()->email}} <br>

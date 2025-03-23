@@ -244,6 +244,38 @@ class TiendaController extends Controller
         }
     }
 
+    public function reportesStock(){
+        try {
+            $productos = DB::table('productos')
+                ->where('Estado', 1)
+                ->get();
+
+            $data = ['productos' => $productos];
+
+            $pdf = Pdf::loadView('reportes.stock', compact('productos'));
+            return $pdf->download('reporteStock.pdf');
+        } catch (\Exception $e) {
+            logs($e->getMessage());
+            return back()->with('mensajeReporte', 'Ocurrio un error');
+        }
+    }
+    public function reportesHorarios(){
+        try {
+            $horarios = DB::table('horarios_cliente as hc')
+                ->join('users as u', 'u.id', '=', 'hc.id_cliente')
+                ->join('horarios as h', 'h.id', '=', 'hc.id_horario')
+                ->get();
+
+            $data = ['horarios' => $horarios];
+
+            $pdf = Pdf::loadView('reportes.horarios', compact('horarios'));
+            return $pdf->download('reporteHorarios.pdf');
+        } catch (\Exception $e) {
+            logs($e->getMessage());
+            return back()->with('mensajeReporte', 'Ocurrio un error');
+        }
+    }
+
     public function reporteSinMembresia() {
         try {
             $usuarios = DB::table('users as u')

@@ -21,6 +21,11 @@ class HorariosController extends Controller
                 ->where("id_cliente", Auth::user()->id)
                 ->first(),
         ];
+
+        $data["membresia"] = DB::table("ventas")
+            ->where('ID_Cliente', Auth::user()->id)
+            ->exists();
+
         return view("horarios/horarios", $data);
     }
 

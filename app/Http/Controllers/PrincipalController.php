@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Mail\ContactoMail;
+use App\Mail\PasswordMail;
 use App\Mail\SatisfaccionMail;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -317,5 +319,49 @@ class PrincipalController extends Controller
 
     public function quienesSomosView(){
         return view('quienessomos');
+    }
+
+    public function newPassword(){
+        return view('newPassword');
+    }
+
+    public function newPasswordEmail(Request $request) {
+        try {
+            $emailValidate = DB::table('users')
+                ->where('email', $request->email);
+
+            if($emailValidate->exists()){
+                $newPassword = $this->generatePassword(12);
+
+                $data["password"] = $newPassword;
+
+                $emailValidate->update([
+                    "password" => Hash::make($newPassword)
+                ]);
+
+                Mail::to($request->email)->send(new PasswordMail($data));
+
+                return back()->with('errorEmail', 'Verifica tu correo');
+            }
+            else {
+                return back()->with('errorEmail', 'El email no existe en la base de datos');
+            }
+        } catch (\Exception $e) {
+            return back()->with('errorEmail', 'Ocurrio un error al tratar de enviar el email');
+        }
+    }
+
+    private function generatePassword($length = 12) {
+        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_-+=<>?';
+
+        $password = '';
+        $charactersLength = strlen($characters);
+
+        for ($i = 0; $i < $length; $i++) {
+            $randomIndex = random_int(0, $charactersLength - 1);
+            $password .= $characters[$randomIndex];
+        }
+
+        return $password;
     }
 }

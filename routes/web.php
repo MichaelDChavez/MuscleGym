@@ -34,6 +34,8 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/servicios', [PrincipalController::class, 'servicios'])->middleware(['auth'])->name('servicios.view');
+Route::get('/new/password', [PrincipalController::class, 'newPassword'])->name('forgot.password');
+Route::post('/new/password', [PrincipalController::class, 'newPasswordEmail'])->name('new.password');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', function(Request $request){
@@ -99,6 +101,8 @@ Route::middleware(['auth', 'administrador'])->group(function(){
     Route::get('/reportes/descargar', [TiendaController::class, 'reporteDescarga'])->name('descargar.repoorte');
     Route::get('/reportes/descargar/productos', [TiendaController::class, 'reporteDescargaProductos'])->name('descargar.repoorte.productos');
     Route::get('/reportes/descargar/usuarios/membresia', [TiendaController::class, 'reporteSinMembresia'])->name('descargar.repoorte.sinmembresia');
+    Route::get('/reportes/stock', [TiendaController::class, 'reportesStock'])->name('descargar.stock');
+    Route::get('/reportes/horarios', [TiendaController::class, 'reportesHorarios'])->name('descargar.horarios.reporte');
     Route::get('/dietas/lista', [PrincipalController::class, 'verDietas'])->name('ver.dietas');
     Route::put('/editar/dieta/{id}', [PrincipalController::class, 'editarDieta'])->name('editar.dieta');
     Route::delete('/eliminar/dieta/{id}', [PrincipalController::class, 'deleteDieta'])->name('borrar.membresia');
