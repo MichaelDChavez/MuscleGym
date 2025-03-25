@@ -7,11 +7,11 @@
     text-decoration: none;
     box-sizing: border-box;
     transition: 0.2s linear;
-    text-transform: capitalize;
     font-family: "Poppins", sans-serif;
 }
 body {
-    background: #000;
+    /* background: #000; */
+    background: #fff;
     background: url("../imagenes/index.png") no-repeat;
     /* background-size: cover; */
     background-position: top;

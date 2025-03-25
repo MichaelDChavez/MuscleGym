@@ -9,7 +9,7 @@
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/style3.css') }}" />
 
-    <section class="home" style="background-color: black; padding: 20px; border-radius: 20px;">
+    <section class="home" style="background-color: black; padding: 20px; border-radius: 20px; margin-block: 100px;">
         <form method="POST" action="{{ route("envio.contacto") }}">
             <h2 style="color: white">Formulario de Contacto</h2><br>
             @csrf

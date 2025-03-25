@@ -39,6 +39,15 @@
         ->join('users as u', 'u.id', '=', 'hc.id_cliente')
         ->join('horarios as h', 'h.id', '=', 'hc.id_horario')
         ->get();
+
+    $ventas = DB::table('ventas_productos')->join('productos', 'productos.ID_Producto', '=', 'ventas_productos.ID_Producto')->get();
+
+    $usuarios = DB::table('users as u')
+            ->leftJoin('ventas as v', 'v.ID_Cliente', '=', 'u.id')
+            ->where('u.rol', '=', '2')
+            ->whereNull('v.ID_Cliente')
+            ->orderBy('created_at', 'desc')
+            ->get();
 @endphp
 
 @section('content')
@@ -98,7 +107,6 @@
                 <input style="padding: 10px; border-radius: 20px; margin-block: 20px; width: 40%;" type="date" name="fechaInicio">
                 <input style="padding: 10px; border-radius: 20px; margin-block: 20px; width: 40%;" type="date" name="fechaFin">
 
-                <button class="btn" type="button">Descargar</button>
                 <button class="btn" type="submit">Descargar</button>
            </form>
         </div>
@@ -109,6 +117,7 @@
             <form method="GET" action="{{ route('descargar.repoorte.productos') }}">
                 <button class="btn" type="submit">Descargar</button>
             </form>
+            @include('reportes.reporteProductos')
        </div>
        <br>
        <br>
@@ -117,6 +126,7 @@
             <form method="GET" action="{{ route('descargar.repoorte.sinmembresia') }}">
                 <button class="btn" type="submit">Descargar</button>
             </form>
+            @include('reportes.reporteSinMembresia')
        </div>
     </div>
 </section>

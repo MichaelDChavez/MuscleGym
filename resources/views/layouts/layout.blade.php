@@ -8,7 +8,8 @@
     {{-- <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" /> --}}
     <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
 </head>
-<body style="background: url({{ asset('storage/imagenes/index.png') }}) repeat; background-position: top; ">
+{{-- <body style="background: url({{ asset('storage/imagenes/index.png') }}) no-repeat; background-position: top; "> --}}
+<body>
 
 
     @auth

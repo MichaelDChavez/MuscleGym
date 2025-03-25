@@ -7,11 +7,11 @@
     text-decoration: none;
     box-sizing: border-box;
     transition: 0.2s linear;
-    text-transform: capitalize;
     font-family: "Poppins", sans-serif;
 }
 body {
-    background: #000;
+    /* background: #000; */
+    background: #fff;
     /* background: url("https://imgv3.fotor.com/images/cover-photo-image/ai-generate-dragon-from-text-in-Fotor-AI-image-generator.jpg") no-repeat; */
     /* background-size: cover; */
     background-position: top;
@@ -34,7 +34,7 @@ body {
 /* Header*/
 .header {
     background: rgb(255,255,255);
-    background: linear-gradient(35deg, rgba(255,255,255,1) 0%, rgba(191,132,42,1) 22%, rgba(33,31,31,1) 100%);
+    background: linear-gradient(35deg, rgba(255,255,255,1) 0%, rgb(240, 122, 37) 22%, rgba(33,31,31,1) 100%);
     position: fixed;
     top: 0;
     left: 0;
@@ -124,12 +124,12 @@ section {
     border: none;
     border-radius: 50px;
   }
-  
+
   .dropdown {
     position: relative;
     display: inline-block;
   }
-  
+
   .dropdown-content {
     display: none;
     position: absolute;
@@ -140,16 +140,16 @@ section {
     border-radius: 10px;
     font-size: 10px;
   }
-  
+
   .dropdown-content a {
     color: black;
     padding: 12px 16px;
     text-decoration: none;
     display: block;
   }
-  
+
   .dropdown-content a:hover {background-color: #ddd;}
-  
+
   .dropdown:hover .dropdown-content {display: block;}
-  
+
   .dropdown:hover .dropbtn {background-color: tomato;}
