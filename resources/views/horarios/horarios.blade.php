@@ -43,6 +43,17 @@
 @extends('layouts.layout')
 
 @section('content')
+@php
+    $dias = [
+        "Lunes",
+        "Martes",
+        "Miercoles",
+        "Jueves",
+        "Viernes",
+        "Sabado",
+        "Domingo",
+    ]
+@endphp
     <div style="margin-top: 100px">
         @if (Auth::user()->rol === 1)
             <div style="background-color: rgba(224, 119, 27, 0.418); padding: 20px; margin:50px; margin-inline: 20%">
@@ -85,24 +96,32 @@
                                 <option value="{{ $horario->id }}"> {{ $horario->horario }} Horario: {{ $horario->inicio }} - {{ $horario->fin }} </option>
                             @endforeach
                         </select>
+                        <select style="border-radius: 5px; padding: 20px;" name="dia" id="horario" required>
+                            <option value="" selected disabled>Seleccione una opción...</option>
+                            @foreach ($dias as $dia)
+                                <option value="{{ $dia }}"> {{ $dia }} </option>
+                            @endforeach
+                        </select>
                         <br>
                         <button class="btn" type="submit">Enviar</button>
                     </form>
                 </div>
-                @if ($horarioActual != Null)
-                <div style="background-color: rgba(224, 119, 27, 0.418); padding: 20px; margin:50px; margin-inline: 20%">
-                    <h3>Su Horario Actual es: </h3> {{ $horarioActual->horario }} / {{ $horarioActual->inicio }} - {{ $horarioActual->fin }}
-                    <form method="POST" action="{{ route("eliminar.horario.cliente", $horarioActual->id_horario) }}">
-                        @csrf
-                        @method('DELETE')
-                        <button class="btn" type="submit">Eliminar</button>
-                    </form>
-                </div>
+                @if (!empty($horariosActual))
+                    @foreach ($horariosActual as $horarioActual)
+                        <div style="background-color: rgba(224, 119, 27, 0.418); padding: 20px; margin-block:10px; margin-inline: 20%">
+                            <h3>Su Horario del día {{ $horarioActual->dia }} es: </h3> {{ $horarioActual->horario }} / {{ $horarioActual->inicio }} - {{ $horarioActual->fin }}
+                            <form method="POST" action="{{ route("eliminar.horario.cliente", $horarioActual->id_horario) }}">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn" type="submit">Eliminar</button>
+                            </form>
+                        </div>
+                    @endforeach
                 @endif
             @else
                 <section class="home">
                     <div style="background-color:  rgba(251, 141, 44, 0.682); padding: 20px; margin-inline: auto">
-                        Debes Adquirir una membresia para seleccionar horarios
+                        Debes Adquirir y pagar una membresia para seleccionar horarios
                     </div>
                 </section>
             @endif

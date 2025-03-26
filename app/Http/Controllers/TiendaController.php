@@ -229,14 +229,14 @@ class TiendaController extends Controller
         try {
             $inicio = $request->fechaInicio;
             $fin = $request->fechaFin;
-            $ventas = DB::table('ventas as v')
+            $ventasReporte = DB::table('ventas as v')
                 ->join('users as u', 'u.id', '=', 'v.ID_Cliente')
                 ->whereDate('Fecha', '>=', $inicio)->whereDate('Fecha', '<=', $fin)
                 ->get();
 
-            $data = ['ventas' => $ventas];
+            $data = ['ventasReporte' => $ventasReporte];
 
-            $pdf = Pdf::loadView('reportes.reporteGenerado', compact('ventas'));
+            $pdf = Pdf::loadView('reportes.reporteGenerado', compact('ventasReporte'));
             return $pdf->download('reporteVentas.pdf');
         } catch (\Exception $e) {
             logs($e->getMessage());

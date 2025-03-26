@@ -12,6 +12,7 @@ class RutinasController extends Controller
         $datos = [
             'membresia' => DB::table('ventas as v')
                 ->where('ID_Cliente', Auth::user()->id)
+                ->where('Pagado', 1)
                 ->join('membresia as m', 'v.ID_Membresia', '=', 'm.ID_Membresia')
                 ->value('m.Tipo_Membresia'),
             'rutinasUsuario' => DB::table('rutinas')->where('ID_Cliente', Auth::user()->id)->get(),

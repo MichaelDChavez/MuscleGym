@@ -87,61 +87,64 @@
                 </div>
             @else
                 <div style="background-color:  rgba(251, 141, 44, 0.682); padding: 20px; margin-inline: auto">
-                    Debes Adquirir una membresia para seleccionar planes alimenticios
+                    Debes Adquirir y pagar una membresia para seleccionar planes alimenticios
                 </div>
             @endif
         @else
-            <div style="margin-inline: auto ">
-                <button onclick="mostrarFormulario()" style="margin-block: 10px; padding: 10px; border-radius: 5px; color: white; background-color: #0a900a; cursor: pointer;">
-                    Crear Dieta
-                </button>
-                <a href="{{ route('ver.dietas') }}" style="margin-block: 10px; margin-inline: 5px; padding: 9px; border-radius: 5px; color: white; background-color: #dd7a41; cursor: pointer;">
-                    Ver Dietas Creadas
-                </a>
-                <input id="searchBox" placeholder="Buscar..." type="text" style="height: 40px; border-radius: 5px; padding: 5px; margin-right: 0;">
-                <div style="background-color:  rgba(224, 119, 27, 0.418); padding: 20px; margin-inline: auto; width: 1200px;">
-                    <table id="filData">
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Dieta</th>
-                        </tr>
-                        @foreach ($usuarios as $usuario)
-                            @php
-                                $dietas = DB::table('planes_usuario as pu')
-                                    ->where('Id_Cliente', $usuario->id)
-                                    ->join('planes_nutricionales as pn', 'pn.Id_plan_nutricional', '=', 'pu.ID_Plan')
-                                    ->get();
-                            @endphp
-                            @if (count($dietas) > 0)
+            <div>
+                <h1>Dietas de Usuarios</h1>
+                <div style="margin-inline: auto ">
+                    <button onclick="mostrarFormulario()" style="margin-block: 10px; padding: 10px; border-radius: 5px; color: white; background-color: #0a900a; cursor: pointer;">
+                        Crear Dieta
+                    </button>
+                    <a href="{{ route('ver.dietas') }}" style="margin-block: 10px; margin-inline: 5px; padding: 9px; border-radius: 5px; color: white; background-color: #dd7a41; cursor: pointer;">
+                        Ver Dietas Creadas
+                    </a>
+                    <input id="searchBox" placeholder="Buscar..." type="text" style="height: 40px; border-radius: 5px; padding: 5px; margin-right: 0; border: 1px solid black;">
+                    <div style="background-color:  rgba(224, 119, 27, 0.418); padding: 20px; margin-inline: auto; width: 1200px;">
+                        <table id="filData">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Dieta</th>
+                            </tr>
+                            @foreach ($usuarios as $usuario)
+                                @php
+                                    $dietas = DB::table('planes_usuario as pu')
+                                        ->where('Id_Cliente', $usuario->id)
+                                        ->join('planes_nutricionales as pn', 'pn.Id_plan_nutricional', '=', 'pu.ID_Plan')
+                                        ->get();
+                                @endphp
+                                @if (count($dietas) > 0)
+                                    <tr class="filInit">
+                                        <td class="nameUser">{{ $usuario->name }}</td>
+                                        <td>
+                                            <table>
+                                                <tr>
+                                                    <th>Ejemplo</th>
+                                                    <th>Datos</th>
+                                                </tr>
+                                                @foreach ($dietas as $dieta)
+                                                    <tr>
+                                                        <td>{{ $dieta->Ejemplo }}</td>
+                                                        <td>
+                                                            <button onclick="mostrar({{$dieta->Calorias_Diarias}}, {{$dieta->Proteinas}}, {{$dieta->Carbohidtaros}}, {{$dieta->Grasas}})" style="padding: 5px; background-color: #4295c5; color: white; border-radius: 20px; cursor: pointer;">
+                                                                Ver datos
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </table>
+                                        </td>
+                                    </tr>
+                                @else
                                 <tr class="filInit">
                                     <td class="nameUser">{{ $usuario->name }}</td>
-                                    <td>
-                                        <table>
-                                            <tr>
-                                                <th>Ejemplo</th>
-                                                <th>Datos</th>
-                                            </tr>
-                                            @foreach ($dietas as $dieta)
-                                                <tr>
-                                                    <td>{{ $dieta->Ejemplo }}</td>
-                                                    <td>
-                                                        <button onclick="mostrar({{$dieta->Calorias_Diarias}}, {{$dieta->Proteinas}}, {{$dieta->Carbohidtaros}}, {{$dieta->Grasas}})" style="padding: 5px; background-color: #4295c5; color: white; border-radius: 20px; cursor: pointer;">
-                                                            Ver datos
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </table>
-                                    </td>
+                                    <td>No hay dietas seleccionadas</td>
                                 </tr>
-                            @else
-                            <tr class="filInit">
-                                <td class="nameUser">{{ $usuario->name }}</td>
-                                <td>No hay dietas seleccionadas</td>
-                            </tr>
-                            @endif
-                        @endforeach
-                    </table>
+                                @endif
+                            @endforeach
+                        </table>
+                    </div>
                 </div>
             </div>
         @endif

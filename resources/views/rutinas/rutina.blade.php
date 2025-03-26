@@ -61,7 +61,11 @@
                         @endforeach
                     </div>
                 @else
-                    <h4 style="color: white; font-size: 20px;">No cuentas con membresia para ver las rutinas</h4>
+                    <div style="width: 100%; margin-inline: 10vw; margin-top: 100px;">
+                        <div style="background-color:  rgba(251, 141, 44, 0.682); padding: 20px; margin-inline: auto; text-align: center;">
+                            Debes Adquirir y pagar una membresia para ver las rutinas
+                        </div>
+                    </div>
                 @endif
 
             @else

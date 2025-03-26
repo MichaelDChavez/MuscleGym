@@ -16,14 +16,15 @@ class HorariosController extends Controller
                 ->select("*", "users.name as name")
                 ->get(),
             "horarios_cliente" => DB::table("horarios")->get(),
-            "horarioActual" => DB::table("horarios_cliente")
+            "horariosActual" => DB::table("horarios_cliente")
                 ->join("horarios", "horarios.id", "=", "horarios_cliente.id_horario")
                 ->where("id_cliente", Auth::user()->id)
-                ->first(),
+                ->get(),
         ];
 
         $data["membresia"] = DB::table("ventas")
             ->where('ID_Cliente', Auth::user()->id)
+            ->where('Pagado', 1)
             ->exists();
 
         return view("horarios/horarios", $data);
@@ -48,18 +49,26 @@ class HorariosController extends Controller
 
     public function horarioClienteCreate(Request $request){
         try {
-            $validate = DB::table("horarios_cliente")->where("id_cliente", Auth::user()->id)->exists();
+            $validate = DB::table("horarios_cliente")
+                ->where("id_cliente", Auth::user()->id)
+                ->where("dia", $request->dia)
+                ->exists();
 
             if($validate) {
-                DB::table("horarios_cliente")->update([
-                    "id_cliente" => Auth::user()->id,
-                    "id_horario" => $request->horario,
-                ]);
+                DB::table("horarios_cliente")
+                    ->where("id_cliente", Auth::user()->id)
+                    ->where("dia", $request->dia)
+                    ->update([
+                        "id_cliente" => Auth::user()->id,
+                        "id_horario" => $request->horario,
+                        "dia" => $request->dia,
+                    ]);
             }
             else {
                 DB::table("horarios_cliente")->insert([
                     "id_cliente" => Auth::user()->id,
                     "id_horario" => $request->horario,
+                    "dia" => $request->dia,
                 ]);
             }
 

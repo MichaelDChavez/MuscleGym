@@ -58,25 +58,41 @@ class PrincipalController extends Controller
                 ]
             ]);
 
-            $cliente = DB::table("cliente")->insert([
-                "ID_Cliente" => Auth::user()->id,
-                "p_Nombre" => Auth::user()->name,
-                "p_Apellido" => Auth::user()->name,
-                "Fecha_Nacimiento" => $request->fechaNacimiento,
-                "Genero" => $request->genero,
-                "Telefono" => $request->telefono,
-                "Email" => Auth::user()->email,
-                "Dirección" => $request->direccion,
-                "Estado" => 1,
-            ]);
+            $clienteValidate = DB::table('cliente')
+                ->where('ID_Cliente', Auth::user()->id)
+                ->exists();
+
+            if(!$clienteValidate){
+                $cliente = DB::table("cliente")->insert([
+                    "ID_Cliente" => Auth::user()->id,
+                    "p_Nombre" => Auth::user()->name,
+                    "p_Apellido" => Auth::user()->name,
+                    "Fecha_Nacimiento" => $request->fechaNacimiento,
+                    "Genero" => $request->genero,
+                    "Telefono" => $request->telefono,
+                    "Email" => Auth::user()->email,
+                    "Dirección" => $request->direccion,
+                    "Estado" => 1,
+                ]);
+            }
+
 
             if(!empty($request->servicio_salud)){
-                DB::table('servicio_salud')->insert([
-                    "ID_Servicio_Salud" => uniqid(),
-                    "ID_Cliente" => Auth::user()->id,
-                    "Historial_Medico" => $request->servicio_salud,
-                    "Foto" => $request->file('file')->store('public/historico')
-                ]);
+                if($request->file('file')){
+                    DB::table('servicio_salud')->insert([
+                        "ID_Servicio_Salud" => uniqid(),
+                        "ID_Cliente" => Auth::user()->id,
+                        "Historial_Medico" => $request->servicio_salud,
+                        "Foto" => $request->file('file')->store('public/historico')
+                    ]);
+                }
+                else {
+                    DB::table('servicio_salud')->insert([
+                        "ID_Servicio_Salud" => uniqid(),
+                        "ID_Cliente" => Auth::user()->id,
+                        "Historial_Medico" => $request->servicio_salud
+                    ]);
+                }
             }
 
             if($cliente){
@@ -103,6 +119,7 @@ class PrincipalController extends Controller
         if(Auth::user()->rol == 2) {
             $data["membresia"] = DB::table("ventas")
                 ->where("ID_Cliente", Auth::user()->id)
+                ->where("Pagado", 1)
                 ->first();
         }
 

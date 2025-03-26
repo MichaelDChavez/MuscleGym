@@ -16,7 +16,7 @@
     }
 </style>
 
-<h2>Usuarios registrados sin membresia</h2>
+<h2 id="titulosinmembresia">Usuarios registrados sin membresia</h2>
 <table>
     <tr>
       <th>USUARIO</th>

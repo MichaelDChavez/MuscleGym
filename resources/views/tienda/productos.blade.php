@@ -18,7 +18,7 @@
     @if (Auth::user()->rol == 1)
         <div style="margin-inline: 200px; gap: 20px; display: grid; grid-template-columns: auto auto auto;">
             <div style="background-color: rgba(224, 119, 27, 0.418); padding: 20px; margin:50px">
-                <h3>Crear Usuarios</h3>
+                <h3>Crear Producto</h3>
                 <form method="POST" action="{{ route('productos.store') }}" enctype="multipart/form-data" style="display:flex; flex-direction: column;">
                     @csrf
                     <input style="padding: 5px; border-radius: 10px; margin-inline: 10px; margin-block: 5px" type="text" placeholder="Nombre" name="nombre" required />
