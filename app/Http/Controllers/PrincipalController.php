@@ -6,13 +6,16 @@ use App\Mail\ContactoMail;
 use App\Mail\PasswordMail;
 use App\Mail\SatisfaccionMail;
 use App\Models\User;
+use App\Providers\RouteServiceProvider;
 use Carbon\Carbon;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\Rules;
 
 class PrincipalController extends Controller
 {
@@ -380,5 +383,77 @@ class PrincipalController extends Controller
         }
 
         return $password;
+    }
+
+    public function registrarAdministrador(){
+        return view('administrador/registro');
+    }
+
+    public function registroAdministrador(Request $request)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'rol' => ['required']
+        ]);
+
+        User::insert([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'rol' => $request->rol
+        ]);
+
+        return back()->with('mensajeRegistro', 'Se creó el usuario satisfactoriamente');
+    }
+
+    public function horariosListaAdministrador(){
+        $data = [
+            "horarios" => DB::table('horarios')
+                ->get(),
+        ];
+        return view('administrador/horarios', $data);
+    }
+
+    public function editarHorario($id, Request $request){
+        try {
+            $horario = DB::table('horarios')
+                ->where('id', $id)
+                ->update([
+                    "horario" => $request->horario_hidden,
+                    "inicio" => $request->inicio_hidden,
+                    "fin" => $request->fin_hidden,
+                    "descripcion" => $request->descripcion_hidden,
+                ]);
+
+            return back()->with('horarioMessage', 'Se actualizo el horario correctamente');
+        } catch (\Exception $e) {
+            logs("Ocurrio un error en editar Horario: ". $e->getMessage());
+            return back()->with('horarioMessage', 'Ocurrio un error al tratar de actualizar');
+        }
+    }
+
+    public function deleteHorario($id){
+        try {
+            DB::table('horarios')
+                ->where('id', $id)
+                ->delete();
+
+                return back()->with('horarioMessage', 'Se elimino el horario correctamente');
+        } catch (\Exception $e) {
+            logs('Ocurrio un error en eliminar Horario: '. $e->getMessage());
+            return back()->with('horarioMessage', 'Ocurrio un error al tratar de eliminar la dieta');
+        }
+    }
+
+    public function historialMedicoUsuarios(){
+        $data = [
+            "historial" => DB::table('servicio_salud as ss')
+                ->join('users as u', 'u.id', '=', 'ss.ID_Cliente')
+                ->get()
+        ];
+
+        return view('administrador/historialMedico', $data);
     }
 }

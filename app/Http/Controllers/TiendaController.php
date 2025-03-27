@@ -295,7 +295,9 @@ class TiendaController extends Controller
 
     public function mostrarProductos(){
         $datos = [
-            'productos' => DB::table('productos')->get()
+            'productos' => DB::table('productos')
+                ->where('Estado', 1)
+                ->get()
         ];
         return view('tienda/productos', $datos);
     }
@@ -334,7 +336,7 @@ class TiendaController extends Controller
                         'Estado' => 0
                     ]);
                     // ->delete();
-                return back()->with('productosMensaje', 'Se elimino el producto');
+                return back()->with('productosMensaje', 'Se inhabilito el producto');
             }
             else{
                 return back()->with('productosMensaje', 'No se encontro el producto');

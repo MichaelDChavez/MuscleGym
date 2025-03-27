@@ -1,7 +1,7 @@
 @extends('layouts.layout')
 
 @if ($message = Session::get('mensaggeHome'))
-    <div style="position: absolute; right: 10px; bottom: 10px; background-color: tomato; padding: 20px; border-radius: 10px">
+    <div style="position: fixed; right: 10px; bottom: 10px; background-color: tomato; padding: 20px; border-radius: 10px">
         <strong style="color:white">{{ $message }}</strong>
     </div>
 @endif

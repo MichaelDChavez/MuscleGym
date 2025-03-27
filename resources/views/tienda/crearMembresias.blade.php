@@ -1,11 +1,11 @@
 @if ($message = Session::get('mensajeMembresia'))
-    <div style="position: absolute; right: 10; bottom: 10; background-color: tomato; padding: 20px; border-radius: 10px">
+    <div style="position: fixed; right: 10; bottom: 10; background-color: tomato; padding: 20px; border-radius: 10px">
         <strong style="color:white">{{ $message }}</strong>
     </div>
 @endif
 
 @if ($message = Session::get('administradorMensajes'))
-    <div style="position: absolute; right: 10; bottom: 10; background-color: tomato; padding: 20px; border-radius: 10px">
+    <div style="position: fixed; right: 10; bottom: 10; background-color: tomato; padding: 20px; border-radius: 10px">
         <strong style="color:white">{{ $message }}</strong>
     </div>
 @endif

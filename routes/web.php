@@ -109,6 +109,15 @@ Route::middleware(['auth', 'administrador'])->group(function(){
 
     Route::get('/envio/encuesta', [PrincipalController::class, 'encuestaView'])->name('encuesta.view');
     Route::get('/correo/satisfaccion/{id}', [PrincipalController::class, 'correoSatisfaccion'])->name('correo.satisfaccion');
+
+    Route::get('/administrador/registrar', [PrincipalController::class, 'registrarAdministrador'])->name('registro.administrador.view');
+    Route::post('/administrador/registrar', [PrincipalController::class, 'registroAdministrador'])->name('registro.administrador.store');
+
+    Route::get('/administrador/horarios', [PrincipalController::class, 'horariosListaAdministrador'])->name('horarios.lista');
+    Route::put('/editar/horario/{id}', [PrincipalController::class, 'editarHorario'])->name('editar.horario');
+    Route::delete('/eliminar/horario/{id}', [PrincipalController::class, 'deleteHorario'])->name('borrar.horario');
+
+    Route::get('/historial/medico/usuarios', [PrincipalController::class, 'historialMedicoUsuarios'])->name('historial.medico.administrador');
 });
 
 Route::middleware(['auth'])->group(function(){

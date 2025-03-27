@@ -28,7 +28,7 @@
     }
 </style>
 
-@if ($message = Session::get('dietaMessage'))
+@if ($message = Session::get('horarioMessage'))
     <div style="position: fixed; right: 10; bottom: 10; background-color: tomato; padding: 20px; border-radius: 10px">
         <strong style="color:white">{{ $message }}</strong>
     </div>
@@ -43,46 +43,40 @@
         <div style="display: flex; gap: 20px; width: 75vw; overflow: auto;">
             <table>
                 <tr>
-                    <th>Dieta</th>
-                    <th>Calorias Diarias</th>
-                    <th>Calorias Proteinas</th>
-                    <th>Carbohidratos</th>
-                    <th>Grasas</th>
+                    <th>Horario</th>
+                    <th>Inicio</th>
+                    <th>Fin</th>
+                    <th>Descripcion</th>
                     <th>Acciones</th>
                 </tr>
-                @foreach ($dietas as $dieta)
-                    <form id="form-{{$dieta->Id_plan_nutricional}}" method="POST" action='{{ route("editar.dieta", "$dieta->Id_plan_nutricional") }}'>
+                @foreach ($horarios as $horario)
+                    <form id="form-{{$horario->id}}" method="POST" action='{{ route("editar.horario", "$horario->id") }}'>
                     </form>
                     <tr>
                         <td>
-                            <div data-Name="Ejemplo" class="dieta-{{$dieta->Id_plan_nutricional}}-ejemplo">
-                                {{ $dieta->Ejemplo }}
+                            <div data-Name="horario" class="horario-{{$horario->id}}-horario">
+                                {{ $horario->horario }}
                             </div>
                         </td>
                         <td>
-                            <div data-Name="Diarias" class="dieta-{{$dieta->Id_plan_nutricional}}-diarias">
-                                {{ $dieta->Calorias_Diarias }}
+                            <div data-Name="inicio" class="horario-{{$horario->id}}-inicio">
+                                {{ $horario->inicio }}
                             </div>
                         </td>
                         <td>
-                            <div data-Name="Proteinas" class="dieta-{{$dieta->Id_plan_nutricional}}-proteinas">
-                                {{ $dieta->Proteinas }}
+                            <div data-Name="fin" class="horario-{{$horario->id}}-fin">
+                                {{ $horario->fin }}
                             </div>
                         </td>
                         <td>
-                            <div data-Name="Carbohidtaros" class="dieta-{{$dieta->Id_plan_nutricional}}-carbohidratros">
-                                {{ $dieta->Carbohidtaros }}
-                            </div>
-                        </td>
-                        <td>
-                            <div data-Name="Grasas" class="dieta-{{$dieta->Id_plan_nutricional}}-grasas">
-                                {{ $dieta->Grasas }}
+                            <div data-Name="descripcion" class="horario-{{$horario->id}}-descripcion">
+                                {{ $horario->descripcion }}
                             </div>
                         </td>
                         <td>
                             <div style="display: flex; gap: 4px;">
-                                <button type="button" id="editarDieta-{{$dieta->Id_plan_nutricional}}" onclick="editar('{{$dieta->Id_plan_nutricional}}')" style="padding: 4px; border-radius: 2px; background-color: rgb(230, 182, 53); cursor: pointer;">Editar</button>
-                                <form method="POST" action="{{ route('borrar.membresia', $dieta->Id_plan_nutricional) }}">
+                                <button type="button" id="editarHorario-{{$horario->id}}" onclick="editar('{{$horario->id}}')" style="padding: 4px; border-radius: 2px; background-color: rgb(230, 182, 53); cursor: pointer;">Editar</button>
+                                <form method="POST" action="{{ route('borrar.horario', $horario->id) }}">
                                     @method("DELETE")
                                     @csrf()
                                     <button type="submit" style="padding: 4px; border-radius: 2px; background-color: rgb(241, 68, 68); cursor: pointer; color: white;">Eliminar</button>
@@ -101,11 +95,10 @@
 <script>
     function editar(id) {
         let fields = [
-            'ejemplo',
-            'diarias',
-            'proteinas',
-            'carbohidratros',
-            'grasas'
+            'horario',
+            'inicio',
+            'fin',
+            'descripcion',
         ];
 
         let form = document.getElementById('form-' + id);
@@ -124,7 +117,7 @@
         form.appendChild(tokenInput);
 
         fields.forEach(function(field) {
-            let initTag = document.getElementsByClassName('dieta-' + id + '-' + field);
+            let initTag = document.getElementsByClassName('horario-' + id + '-' + field);
 
             for (let i = 0; i < initTag.length; i++) {
                 let divData = initTag[i];
@@ -133,10 +126,10 @@
                 inputNew.name = divData.dataset.name;
                 inputNew.value = divData.innerText;
 
-                if(divData.dataset.name == 'Ejemplo')
-                    inputNew.type = "text"
+                if(divData.dataset.name == 'inicio' || divData.dataset.name == 'fin')
+                    inputNew.type = "time"
                 else
-                    inputNew.type = 'number';
+                    inputNew.type = 'text';
                 inputNew.step = "any";
 
                 let inputHidden = document.createElement('input');
@@ -154,7 +147,7 @@
             }
         });
 
-        let buttonEdit = document.getElementById('editarDieta-' + id);
+        let buttonEdit = document.getElementById('editarHorario-' + id);
         let buttonEditNew = document.createElement('button');
         buttonEditNew.type = 'submit';
         buttonEditNew.style.padding = '4px';

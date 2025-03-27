@@ -1,11 +1,11 @@
 @if ($message = Session::get('horarioMensaje'))
-    <div style="position: absolute; right: 10; bottom: 10; background-color: tomato; padding: 20px; border-radius: 10px">
+    <div style="position: fixed; right: 10; bottom: 10; background-color: tomato; padding: 20px; border-radius: 10px">
         <strong style="color:white">{{ $message }}</strong>
     </div>
 @endif
 
 @if ($message = Session::get('administradorMensajes'))
-    <div style="position: absolute; right: 10; bottom: 10; background-color: tomato; padding: 20px; border-radius: 10px">
+    <div style="position: fixed; right: 10; bottom: 10; background-color: tomato; padding: 20px; border-radius: 10px">
         <strong style="color:white">{{ $message }}</strong>
     </div>
 @endif
@@ -65,7 +65,10 @@
                     <input style="padding: 5px; border-radius: 10px; margin-inline: 10px; margin-block: 5px" type="time" placeholder="Fin" name="fin" required />
                     <textarea style="padding: 5px; border-radius: 10px; margin-inline: 10px; margin-block: 5px" type="time" placeholder="Descripción" name="descripcion"></textarea>
 
-                    <button class="btn" type="submit">Enviar</button>
+                    <div style="display: flex">
+                        <button class="btn" type="submit">Crear</button>
+                        <a class="btn" style="text-align: center; margin-inline: 5px;" href="{{ route('horarios.lista') }}">Ver Horarios</a>
+                    </div>
                 </form>
             </div>
 

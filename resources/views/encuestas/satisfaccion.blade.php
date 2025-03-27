@@ -29,7 +29,7 @@
 </style>
 
 @if ($message = Session::get('correoMessage'))
-    <div style="position: absolute; right: 10; bottom: 10; background-color: tomato; padding: 20px; border-radius: 10px">
+    <div style="position: fixed; right: 10; bottom: 10; background-color: tomato; padding: 20px; border-radius: 10px">
         <strong style="color:white">{{ $message }}</strong>
     </div>
 @endif

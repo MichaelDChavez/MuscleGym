@@ -45,7 +45,7 @@
     </div>
 </body>
 @if ($message = Session::get('errorEmail'))
-    <div style="margin: 20px; position: absolute; right: 0; bottom: 0; background-color: tomato; padding: 20px; border-radius: 10px">
+    <div style="margin: 20px; position: fixed; right: 0; bottom: 0; background-color: tomato; padding: 20px; border-radius: 10px">
         <strong style="color:white">{{ $message }}</strong>
     </div>
 @endif
