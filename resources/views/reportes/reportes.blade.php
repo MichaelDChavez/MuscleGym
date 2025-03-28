@@ -31,8 +31,10 @@
 @extends('layouts.layout')
 
 @php
-    $productos = DB::table('productos')
-        ->where('Estado', 1)
+    $productos = DB::table('productos as p')
+        ->leftJoin('ventas_productos as vp', 'vp.ID_Producto', '=', 'p.ID_Producto')
+        ->select('p.ID_Producto', 'p.Nombre', 'p.Cantidad_disponible', 'p.Proveedor', 'p.Precio', 'p.Precio_Compra', 'p.Estado', DB::raw('COALESCE(COUNT(vp.ID_Producto), 0) as cantidad_vendida'),DB::raw('COALESCE(SUM(p.Precio), 0) as total_vendido'))
+        ->groupBy('p.ID_Producto', 'p.Nombre', 'p.Precio')
         ->get();
 
     $horarios = DB::table('horarios_cliente as hc')
@@ -67,13 +69,27 @@
                 <tr>
                     <th>Producto</th>
                     <th>Cantidad</th>
-                    <th>Disponible</th>
+                    <th>Proveedor</th>
+                    <th>Precio de venta</th>
+                    <th>Precio de compra</th>
+                    <th>Cantidad Vendida</th>
+                    <th>Total Vendido</th>
+                    <th>Activo</th>
                 </tr>
                 @foreach ($productos as $producto)
                     <tr>
                         <td>{{ $producto->Nombre }}</td>
                         <td>{{ $producto->Cantidad_disponible }}</td>
-                        <td>{{ $producto->Cantidad_disponible <= 0 ? "No" : "Si" }}</td>
+                        <td>{{ $producto->Proveedor }}</td>
+                        <td>{{ number_format($producto->Precio) }}</td>
+                        <td>{{ number_format($producto->Precio_Compra) }}</td>
+                        <td>{{ $producto->cantidad_vendida }}</td>
+                        @if ($producto->cantidad_vendida <= 0)
+                            <td>0</td>
+                        @else
+                            <td>{{ number_format($producto->total_vendido) }}</td>
+                        @endif
+                        <td>{{ $producto->Estado == 0 ? "Inactivo" : "Activo" }}</td>
                     </tr>
                 @endforeach
             </table>

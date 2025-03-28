@@ -25,6 +25,7 @@
                     <input style="padding: 5px; border-radius: 10px; margin-inline: 10px; margin-block: 5px" type="number" placeholder="Precio" name="precio" required />
                     <input style="padding: 5px; border-radius: 10px; margin-inline: 10px; margin-block: 5px" type="number" placeholder="Cantidad disponible" name="cantidad_disponible"  />
                     <input style="padding: 5px; border-radius: 10px; margin-inline: 10px; margin-block: 5px" type="text" placeholder="Proveedor" name="proveedor" required />
+                    <input style="padding: 5px; border-radius: 10px; margin-inline: 10px; margin-block: 5px" type="number" placeholder="Precio compra" name="precio_compra" required />
                     <input style="padding: 5px; border-radius: 10px; margin-inline: 10px; margin-block: 5px" type="file" name="file" required />
 
                     <button class="btn" type="submit">Enviar</button>

@@ -33,6 +33,8 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::post('/pqrs/envio', [PrincipalController::class, 'pqrsEnvio'])->name('pqrs.envio');
+
 Route::get('/servicios', [PrincipalController::class, 'servicios'])->middleware(['auth'])->name('servicios.view');
 Route::get('/new/password', [PrincipalController::class, 'newPassword'])->name('forgot.password');
 Route::post('/new/password', [PrincipalController::class, 'newPasswordEmail'])->name('new.password');
@@ -118,6 +120,9 @@ Route::middleware(['auth', 'administrador'])->group(function(){
     Route::delete('/eliminar/horario/{id}', [PrincipalController::class, 'deleteHorario'])->name('borrar.horario');
 
     Route::get('/historial/medico/usuarios', [PrincipalController::class, 'historialMedicoUsuarios'])->name('historial.medico.administrador');
+
+    Route::get('/administrador/pqrs', [PrincipalController::class, 'pqrsLista'])->name('lista.pqrs');
+    Route::put('/administrador/pqrs/{id}', [PrincipalController::class, 'pqrsUpdate'])->name('update.pqrs');
 });
 
 Route::middleware(['auth'])->group(function(){

@@ -26,13 +26,27 @@
     <tr>
         <th>Producto</th>
         <th>Cantidad</th>
-        <th>Disponible</th>
+        <th>Proveedor</th>
+        <th>Precio de venta</th>
+        <th>Precio de compra</th>
+        <th>Cantidad Vendida</th>
+        <th>Total Vendido</th>
+        <th>Activo</th>
     </tr>
     @foreach ($productos as $producto)
         <tr>
             <td>{{ $producto->Nombre }}</td>
             <td>{{ $producto->Cantidad_disponible }}</td>
-            <td>{{ $producto->Cantidad_disponible <= 0 ? "No" : "Si" }}</td>
+            <td>{{ $producto->Proveedor }}</td>
+            <td>{{ number_format($producto->Precio) }}</td>
+            <td>{{ number_format($producto->Precio_Compra) }}</td>
+            <td>{{ $producto->cantidad_vendida }}</td>
+            @if ($producto->cantidad_vendida <= 0)
+                <td>0</td>
+            @else
+                <td>{{ number_format($producto->total_vendido) }}</td>
+            @endif
+            <td>{{ $producto->Estado == 0 ? "Inactivo" : "Activo" }}</td>
         </tr>
     @endforeach
 </table>

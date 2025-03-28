@@ -246,9 +246,12 @@ class TiendaController extends Controller
 
     public function reportesStock(){
         try {
-            $productos = DB::table('productos')
-                ->where('Estado', 1)
+            $productos = DB::table('productos as p')
+                ->leftJoin('ventas_productos as vp', 'vp.ID_Producto', '=', 'p.ID_Producto')
+                ->select('p.ID_Producto', 'p.Nombre', 'p.Cantidad_disponible', 'p.Proveedor', 'p.Precio', 'p.Precio_Compra', 'p.Estado', DB::raw('COALESCE(COUNT(vp.ID_Producto), 0) as cantidad_vendida'),DB::raw('COALESCE(SUM(p.Precio), 0) as total_vendido'))
+                ->groupBy('p.ID_Producto', 'p.Nombre', 'p.Precio')
                 ->get();
+
 
             $data = ['productos' => $productos];
 
@@ -314,7 +317,8 @@ class TiendaController extends Controller
                 'Precio' => $request->precio,
                 'Cantidad_disponible' => $request->cantidad_disponible,
                 'Proveedor' => $request->proveedor,
-                'Estado' => 1
+                'Estado' => 1,
+                'Precio_Compra' => $request->precio_compra
             ]);
 
 

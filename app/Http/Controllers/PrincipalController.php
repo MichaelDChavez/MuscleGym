@@ -456,4 +456,45 @@ class PrincipalController extends Controller
 
         return view('administrador/historialMedico', $data);
     }
+
+    public function pqrsEnvio(Request $request) {
+        try {
+            $email = $request->email ? $request->email : Auth::user()->email;
+            $opinion = $request->opinion;
+
+            DB::table('pqrs')->insert([
+                'email' => $email,
+                "opinion" => $opinion
+            ]);
+
+            return back()->with('mensaggeHome', 'Se genero el PQRS, gracias por tu opinión');
+        }
+        catch(\Exception $e){
+            logs('error: ' . $e->getMessage());
+            return back()->with('mensaggeHome', 'Error al generar el PQRS');
+        }
+    }
+
+    public function pqrsLista(){
+        $data = [
+            "pqrs" => DB::table('pqrs')->get()
+        ];
+        return view('administrador.pqrs', $data);
+    }
+
+    public function pqrsUpdate(Request $request, $id) {
+        try {
+            DB::table('pqrs')
+                ->where('id', $id)
+                ->update([
+                    'respuesta' => $request->respuesta,
+                    'solucion' => 1
+                ]);
+
+            return back()->with('mensaggeHome', 'Se envio la respuesta');
+        } catch (\Exception $e) {
+            logs('error: ' . $e->getMessage());
+            return back()->with('messagepqrs', 'Error al responder el PQRS');
+        }
+    }
 }

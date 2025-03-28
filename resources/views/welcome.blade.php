@@ -82,4 +82,22 @@
     {{-- </center> --}}
 </div>
 
+<div style="width: 100%; gap: 50px; padding: 50px;">
+    <h2 style="text-align: center; color: black; font-size: 50px; margin-block: auto;">PQRS</h2>
+    <center>
+        <div style="margin-inline: 30vw; padding: 10px; border-radius: 10px; background-color: rgba(255, 99, 71, 0.823);">
+            <form method="POST" action="{{ route("pqrs.envio") }}">
+                @csrf
+                <label>Deja tu opinión, queja o sugerencia</label><br>
+                @guest
+                    <input type="email" required placeholder="prueba@gmail.com" name="email" style="border: 2px solid black; border-radius: 5px; padding: 5px;"><br>
+                @endguest
+                <br>
+                <textarea name="opinion" required style="border: 2px solid black; border-radius: 5px; padding: 5px;" cols="60" rows="10" placeholder="Deja tu comentario"></textarea><br>
+                <button class="btn" type="submit">Enviar</button>
+            </form>
+        </div>
+    </center>
+</div>
+
 @endsection

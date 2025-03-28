@@ -61,6 +61,7 @@
                     <a href="{{route('encuesta.view')}}">Encuesta</a>
                     <a href="{{route('registro.administrador.view')}}">Registro</a>
                     <a href="{{route('historial.medico.administrador')}}">Historial Medico</a>
+                    <a href="{{route('lista.pqrs')}}">PQRS</a>
                 @endif
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
